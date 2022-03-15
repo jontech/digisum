@@ -20,3 +20,9 @@ def test_digit_sum_result_api(client):
     response = client.post('/digits/sum', data=json.dumps(test_data))
     assert response.status_code == 200
     assert json.loads(response.data)["result"] == 8 
+
+def test_digit_sum_api_invalid_data(client):
+    """Should respond with bad request when invalid json"""
+    test_data = "{"
+    response = client.post('/digits/sum', data=json.dumps(test_data))
+    assert response.status_code == 400
