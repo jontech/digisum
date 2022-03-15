@@ -26,3 +26,13 @@ def test_digit_sum_api_invalid_data(client):
     test_data = "{"
     response = client.post('/digits/sum', data=json.dumps(test_data))
     assert response.status_code == 400
+
+def test_digit_sum_api_missing_keys(client):
+    """Should respond with bad request when missing keys in json"""
+    test_data = {
+        "address": {},
+        "meta": {}
+    }
+    response = client.post('/digits/sum', data=json.dumps(test_data))
+    assert response.status_code == 400
+    
