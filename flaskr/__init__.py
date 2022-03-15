@@ -1,18 +1,6 @@
 import os
-import json
 from functools import wraps
 from flask import Flask, jsonify, request, abort
-
-def as_json(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        try:
-            return jsonify(
-                f(json.loads(request.data), *args, **kwargs)
-            )
-        except Exception as e:
-            abort(400)
-    return wrapper
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -22,11 +10,10 @@ def create_app(test_config=None):
         return b"Hello world!"
 
     @app.route('/digits/sum', methods=(['POST']))
-    @as_json
-    def digits_sum(data):
-        values_sum = sum(data["address"]["values"])
+    def digits_sum():
+        values_sum = sum(request.json["address"]["values"])
         digits_iter = map(int, str(values_sum))
         result = sum(digits_iter)
-        return {"result": result}
+        return jsonify({"result": result})
 
     return app
