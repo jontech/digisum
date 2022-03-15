@@ -9,5 +9,6 @@ setup(
     install_requires=[
         'flask',
         'python-dotenv',
+        'gunicorn',
     ],
 )
