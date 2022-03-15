@@ -28,6 +28,10 @@ def create_app(test_config=None):
                 abort(400)
         return wrapper
     
+    @app.route('/', methods=(['GET']))
+    def welcome():
+        return b"Hello world!"
+
     @app.route('/digits/sum', methods=(['POST']))
     @as_json
     def digits_sum(data):
