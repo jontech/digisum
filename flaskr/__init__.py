@@ -3,30 +3,19 @@ import json
 from functools import wraps
 from flask import Flask, jsonify, request, abort
 
+def as_json(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            return jsonify(
+                f(json.loads(request.data), *args, **kwargs)
+            )
+        except Exception as e:
+            abort(400)
+    return wrapper
+
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='$JKJFAK541048635',
-    )
-    if test_config is None:
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        app.config.from_mapping(test_config)
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
-
-    def as_json(f):
-        @wraps(f)
-        def wrapper(*args, **kwargs):
-            try:
-                return jsonify(
-                    f(json.loads(request.data), *args, **kwargs)
-                )
-            except Exception as e:
-                abort(400)
-        return wrapper
     
     @app.route('/', methods=(['GET']))
     def welcome():
