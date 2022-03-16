@@ -31,12 +31,14 @@ def test_digits_sum_invalid_data(client):
     }
     response = client.post('/digits/sum', json=test_data)
     assert response.status_code == 400
+    assert len(response.json['errors']) == 3
 
 def test_digits_sum_malformed_json(client):
     """Should respond with bad request when invalid json"""
     test_data = "{"
     response = client.post('/digits/sum', json=test_data)
     assert response.status_code == 400
+    assert response.json["errors"] == ["Malformed json or missing application/json content type"]
 
 def test_digits_sum_missing_json_keys(client):
     """Should respond with bad request when missing keys in json"""
@@ -46,9 +48,10 @@ def test_digits_sum_missing_json_keys(client):
     }
     response = client.post('/digits/sum', json=test_data)
     assert response.status_code == 400
+    assert response.json["errors"][0][:11] == "Missing key"
     
 def test_digits_sum_missing_json_header(client):
     """Should respond with bad request when request body is not json"""
     response = client.post('/digits/sum', data="oh no")
     assert response.status_code == 400
-    
+    assert response.json["errors"] == ["Malformed json or missing application/json content type"]

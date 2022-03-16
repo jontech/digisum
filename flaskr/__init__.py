@@ -17,7 +17,7 @@ def validate_json(validators):
                 except KeyError as e:
                     return jsonify({"errors": ["Missing key {} in json object".format(e)]}), 400
             else:
-                return jsonify({"errors": ["Malformed json"]}), 400
+                return jsonify({"errors": ["Malformed json or missing application/json content type"]}), 400
         return wrapper
     return decorate
 
